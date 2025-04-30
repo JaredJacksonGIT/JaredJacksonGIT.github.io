@@ -1,15 +1,26 @@
+import os
 import folium
 from folium.plugins import HeatMap
-from numbergenerator import *  
+from numbergenerator import * 
+import json 
 
 # Generate intensities for 3 locations
-intensityarray = []
+PM25array = []
+COarray = []
 
 for _ in range(100):
     intensity = randPM25()
-    intensityarray.append(intensity)
+    PM25array.append(intensity)
 
-m = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
+for _ in range(100):
+    intensity = randCO()
+    COarray.append(intensity)
+
+PM25Map = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
+COMap = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
+
+
+
 
 # YES THIS IS GROSS WILL FIX LATER
 
@@ -126,14 +137,11 @@ locations = [
     [-37.82194867, 145.0395862],
 ]
 
-# Pair locations with intensity
-heat_data = [
-    [lat, lon, intensity]
-    for (lat, lon), intensity in zip(locations, intensityarray)
-]
 
-# Add heatmap
-HeatMap(heat_data).add_to(m)
+def export_heat_data(filename, array):
+    heat_data = [[lat, lon, intensity] for (lat, lon), intensity in zip(locations, array)]
+    with open(filename, "w") as f:
+        json.dump(heat_data, f)
 
-# Save map
-m.save("heatmap.html")
+export_heat_data("pm25_data.json", PM25array)
+export_heat_data("co_data.json", COarray)
