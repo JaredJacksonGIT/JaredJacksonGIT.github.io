@@ -42,6 +42,10 @@ for _ in range(100):
     O3array.append(intensity)
 
 
+PM25Map = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
+COMap = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
+
+
 # YES THIS IS GROSS WILL FIX LATER
 
 locations = [
