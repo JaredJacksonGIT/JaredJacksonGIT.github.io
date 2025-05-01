@@ -167,10 +167,10 @@ def export_heat_data(filename, array):
     with open(filename, "w") as f:
         json.dump(heat_data, f)
 
-export_heat_data("pm25_data.json", PM25array)
-export_heat_data("co_data.json", COarray)
-export_heat_data("pm10_data.json", PM10array)
-export_heat_data("co2_data.json", CO2array)
+export_heat_data("PM25_data.json", PM25array)
+export_heat_data("CO_data.json", COarray)
+export_heat_data("PM10_data.json", PM10array)
+export_heat_data("CO2_data.json", CO2array)
 export_heat_data("NO2_data.json", NO2array)
 export_heat_data("O3_data.json", O3array)
-export_heat_data("VOcs_data.json", VOCsarray)
+export_heat_data("VOCs_data.json", VOCsarray)
