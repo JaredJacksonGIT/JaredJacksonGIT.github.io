@@ -1,7 +1,7 @@
 from collections import defaultdict
 import json
 
-# TEMPORARY - replace with loop to process Jesara's simulated values
+# TEMPgtftORARY - replace with loop to process Jesara's simulated values
 # take from the server and sort into this format (reading values from a json file?)
 incoming_data = [
     {"location" : "location_a", "pollutant" : "PM2.5", "value" : 33.2},
