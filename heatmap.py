@@ -41,13 +41,6 @@ for _ in range(100):
     intensity = randO3()
     O3array.append(intensity)
 
-
-PM25Map = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
-COMap = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
-
-
-# YES THIS IS GROSS WILL FIX LATER
-
 locations = [
     [-37.822740, 145.037103],
     [-37.82258939, 145.03716513],
