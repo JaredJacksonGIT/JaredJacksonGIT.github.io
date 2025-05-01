@@ -6,20 +6,40 @@ import json
 
 # Generate intensities for 3 locations
 PM25array = []
+PM10array = []
+NO2array = []
 COarray = []
+CO2array = []
+VOCsarray = []
+O3array = []
 
 for _ in range(100):
     intensity = randPM25()
     PM25array.append(intensity)
 
 for _ in range(100):
+    intensity = randPM10()
+    PM10array.append(intensity)
+    
+for _ in range(100):
+    intensity = randNO2()
+    NO2array.append(intensity)
+
+for _ in range(100):
     intensity = randCO()
     COarray.append(intensity)
 
-PM25Map = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
-COMap = folium.Map(location=[-37.821070, 145.036259], zoom_start=17)
+for _ in range(100):
+    intensity = randCO2()
+    CO2array.append(intensity)
 
+for _ in range(100):
+    intensity = randVOCs()
+    VOCsarray.append(intensity)
 
+for _ in range(100):
+    intensity = randO3()
+    O3array.append(intensity)
 
 
 # YES THIS IS GROSS WILL FIX LATER
@@ -145,3 +165,8 @@ def export_heat_data(filename, array):
 
 export_heat_data("pm25_data.json", PM25array)
 export_heat_data("co_data.json", COarray)
+export_heat_data("pm10_data.json", PM10array)
+export_heat_data("co2_data.json", CO2array)
+export_heat_data("NO2_data.json", NO2array)
+export_heat_data("O3_data.json", O3array)
+export_heat_data("VOcs_data.json", VOCsarray)
