@@ -43,7 +43,7 @@
   let currentHeatData = [];
 
   function getRadius(zoom) {
-    return Math.min(50, 5 + (zoom - 10) * 4); // Increase radius as zoom increases
+    return Math.min(100, 10 + (zoom - 10) * 8);  // More aggressive
   }
 
   async function loadHeatData(name) {
@@ -53,7 +53,7 @@
 
     const layer = L.heatLayer(currentHeatData, {
       radius: getRadius(map.getZoom()),
-      blur: 20,
+      blur: 5,
       maxZoom: 18,
       max: 1.0,
       minOpacity: 0.6,
