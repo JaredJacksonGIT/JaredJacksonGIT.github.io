@@ -97,6 +97,55 @@ locations = [
     [-37.6989, 144.7823],  # Sydenham
     [-37.7076, 144.7476],  # Taylors Hill
     [-37.7423, 144.7437],  # Caroline Springs
+    [-37.6937, 144.9173],  # Airport West
+    [-37.6909, 144.9016],  # Gladstone Park
+    [-37.6747, 144.9103],  # Broadmeadows
+    [-37.6818, 144.9467],  # Campbellfield
+    [-37.6717, 144.9435],  # Coolaroo
+    [-37.6622, 144.9311],  # Dallas
+    [-37.6489, 144.9053],  # Westmeadows
+    [-37.6871, 145.0784],  # Bundoora
+    [-37.6795, 145.0590],  # Mill Park
+    [-37.6514, 145.0180],  # Epping
+    [-37.6713, 145.0176],  # Lalor
+    [-37.6793, 145.0097],  # Thomastown
+    [-37.7155, 145.1425],  # Warrandyte
+    [-37.8417, 145.1140],  # Mount Waverley
+    [-37.8881, 145.0812],  # Chadstone
+    [-37.9018, 145.0879],  # Oakleigh
+    [-37.9100, 145.0897],  # Clayton
+    [-37.9466, 145.1530],  # Springvale
+    [-37.9653, 145.1692],  # Noble Park
+    [-37.9886, 145.1923],  # Dandenong
+    [-38.0164, 145.1577],  # Keysborough
+    [-37.9352, 145.1857],  # Mulgrave
+    [-37.9039, 145.1946],  # Wheelers Hill
+    [-37.9042, 145.0064],  # Brighton
+    [-37.9362, 145.0001],  # Sandringham
+    [-37.9645, 145.0160],  # Black Rock
+    [-37.9793, 145.0354],  # Beaumaris
+    [-37.9671, 145.0526],  # Mentone
+    [-37.9989, 145.0653],  # Mordialloc
+    [-38.0117, 145.0794],  # Parkdale
+    [-38.0213, 145.0966],  # Edithvale
+    [-38.0291, 145.1034],  # Aspendale
+    [-38.0345, 145.1106],  # Chelsea
+    [-38.0673, 145.1260],  # Carrum
+    [-38.1032, 145.1326],  # Seaford
+    [-38.1461, 145.1223],  # Frankston
+    [-37.8201, 144.9465],  # Docklands
+    [-37.7926, 144.9385],  # Kensington
+    [-37.7844, 144.9511],  # Parkville
+    [-37.8023, 144.9783],  # Fitzroy
+    [-37.8008, 144.9634],  # Carlton
+    [-37.8120, 144.9839],  # East Melbourne
+    [-37.8230, 144.9645],  # Southbank
+    [-37.8255, 144.9541],  # South Wharf
+    [-37.8425, 144.9612],  # Middle Park
+    [-37.8448, 144.9739],  # Albert Park
+    [-37.8522, 144.9930],  # Prahran
+    [-37.8551, 144.9945],  # Windsor
+    [-37.8858, 145.0030],  # Elsternwick
 ]
 
 def export_heat_data(filename, array):
