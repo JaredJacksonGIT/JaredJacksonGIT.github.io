@@ -9,8 +9,16 @@
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
   <style>
     #map { height: 100vh; }
-    .btn-container { position: absolute; top: 10px; left: 60px; z-index: 1000; }
-    .btn-container button { margin: 4px; padding: 8px; }
+    .btn-container {
+      position: absolute;
+      top: 10px;
+      left: 60px;
+      z-index: 1000;
+    }
+    .btn-container button {
+      margin: 4px;
+      padding: 8px;
+    }
   </style>
 </head>
 <body>
@@ -34,32 +42,31 @@
   const heatLayers = {};
   let currentHeatData = [];
 
+  function getRadius(zoom) {
+    return Math.min(50, 5 + (zoom - 10) * 4); // Increase radius as zoom increases
+  }
+
   async function loadHeatData(name) {
     const res = await fetch(`${name}_data.json`);
     const rawData = await res.json();
     currentHeatData = rawData;
 
-    const layer = L.heatLayer(rawData, {
+    const layer = L.heatLayer(currentHeatData, {
       radius: getRadius(map.getZoom()),
       blur: 20,
       maxZoom: 18,
       max: 1.0,
       minOpacity: 0.6,
       gradient: {
-        0.0: 'blue',
-        0.4: 'lime',
+        0.0: 'lime',
+        0.4: 'yellow',
         0.6: 'orange',
         0.8: 'red',
         1.0: 'maroon'
       }
-  });
+    });
 
     heatLayers[name] = layer;
-  }
-
-  function getRadius(zoom) {
-    // Adjust radius based on zoom level
-    return Math.max(5, 25 - (18 - zoom) * 2);
   }
 
   async function toggleHeatmap(name) {
@@ -75,7 +82,6 @@
     map.addLayer(currentLayer);
   }
 
-  // Update radius dynamically on zoom
   map.on("zoomend", () => {
     if (currentLayer && currentHeatData.length > 0) {
       const newRadius = getRadius(map.getZoom());
@@ -84,14 +90,21 @@
         radius: newRadius,
         maxZoom: 18,
         blur: 20,
-        max: 1.0
+        max: 1.0,
+        minOpacity: 0.6,
+        gradient: {
+          0.0: 'lime',
+          0.4: 'yellow',
+          0.6: 'orange',
+          0.8: 'red',
+          1.0: 'maroon'
+        }
       });
       map.addLayer(currentLayer);
     }
   });
 
-  // Load default
-  toggleHeatmap('PM2.5');
+  toggleHeatmap('PM25'); // Load default
 </script>
 </body>
 </html>
