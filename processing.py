@@ -1,24 +1,23 @@
 from collections import defaultdict
 import json
 
-# TEMPgtftORARY - replace with loop to process Jesara's simulated values
-# take from the server and sort into this format (reading values from a json file?)
+# TEMPORARY - replace with loop to process Jesara's simulated values off the server
 incoming_data = [
-    {"location" : "location_a", "pollutant" : "PM2.5", "value" : 33.2},
-    {"location" : "location_a", "pollutant" : "PM2.5", "value" : 30.8},
-    {"location" : "location_a", "pollutant" : "PM10", "value" : 29.6},
-    {"location" : "location_a", "pollutant" : "PM10", "value" : 30.2},
+    {"long" : 33.5, "lat" : 180.2, "pollutant" : "PM2.5", "value" : 33.2},
+    {"long" : 33.5, "lat" : 180.2, "pollutant" : "PM2.5", "value" : 30.8},
+    {"long" : 34.2, "lat" : 182.7, "pollutant" : "PM10", "value" : 29.6},
+    {"long" : 34.2, "lat" : 182.7, "pollutant" : "PM10", "value" : 30.2},
 
-    {"location" : "location_b", "pollutant" : "CO2", "value" : 480.2},
-    {"location" : "location_b", "pollutant" : "CO2", "value" : 473.5},
-    {"location" : "location_b", "pollutant" : "N02", "value" : 53.2},
-    {"location" : "location_b", "pollutant" : "N02", "value" : 49.8},
+    {"long" : 400.1, "lat" : 250.1, "pollutant" : "CO2", "value" : 480.2},
+    {"long" : 400.1, "lat" : 250.1, "pollutant" : "CO2", "value" : 473.5},
+    {"long" : 405.4, "lat" : 253.9, "pollutant" : "N02", "value" : 53.2},
+    {"long" : 405.4, "lat" : 253.9, "pollutant" : "N02", "value" : 49.8},
 
-    {"location" : "location_c", "pollutant" : "PM2.5", "value" : 193.2},
-    {"location" : "location_c", "pollutant" : "PM2.5", "value" : 203.1},
-    {"location" : "location_c", "pollutant" : "VOCs", "value" : 0.572},
-    {"location" : "location_c", "pollutant" : "VOCs", "value" : 0.551},
-    {"location" : "location_c", "pollutant" : "VOCs", "value" : 0.492}
+    {"long" : 200.1, "lat" : 70.5, "pollutant" : "PM2.5", "value" : 193.2},
+    {"long" : 200.1, "lat" : 70.5, "pollutant" : "PM2.5", "value" : 203.1},
+    {"long" : 201.7, "lat" : 69.2, "pollutant" : "VOCs", "value" : 0.572},
+    {"long" : 201.7, "lat" : 69.2, "pollutant" : "VOCs", "value" : 0.551},
+    {"long" : 201.7, "lat" : 69.2, "pollutant" : "VOCs", "value" : 0.492}
 ]
 
 # Breakpoints to calculate AQI (C_low, C_high, I_low, I_high)
@@ -85,6 +84,11 @@ breakpoints = {
     ]
 }
 
+def export_heat_data(filename, data):
+    heatmap_data = [[lat, lon, aqi[0]] for (lat, lon), aqi in data.items()]
+    with open(filename, 'w') as f: # write pollution data to json file
+        json.dump(heatmap_data, f) # format out into the json file
+
 # AQI calculation formulas for each pollutant
 def calculate_aqi(pol, conc):
     if pol not in breakpoints:
@@ -94,31 +98,31 @@ def calculate_aqi(pol, conc):
             return round(((I_high - I_low) / (C_high - C_low)) * (conc - C_low) + I_low)
     return None # if the conc doesn't afll within defined range
 
+# Container to hold the location and sensor readings SORTED BY POLLUTANT
 pollution_data = defaultdict(lambda: defaultdict(list))
 
-# Organise concentration by location, then pollutant
+# Pair readings with the location SORTED BY POLLUTANT (long, lat, value)
 for entry in incoming_data:
-    location = entry["location"]
+    location = (entry["long"], entry["lat"])
     pollutant = entry["pollutant"]
-    concentration = entry["value"] # sensor reading (raw values)
+    value = entry["value"] # sensor reading (raw values)
 
-    # put all concentrations into dictionary sorted by location and pollutant
-    pollution_data[location][pollutant].append(concentration)
-    #print(pollution_data) # ** so it's correctly taking all the values and sorting them. just not calculating aqi properly yet! **
+    pollution_data[pollutant][location].append(value)
+    #print(pollution_data)
+
+# Container to hold location and AQI SORTED BY POLLUTANT
+pollutant_data = defaultdict(lambda: defaultdict(list))
 
 # Average out concentration values before calculating AQI
-for location in pollution_data: # every location
-    for pollutant in pollution_data[location]: # every pollutant in each location
-        all_concentrations = pollution_data[location][pollutant] # collect all concentrations for that pollutant in given location
-        avg_concentration = round(sum(all_concentrations)) / (len(all_concentrations)) # average it out
+for pollutant, locations in pollution_data.items(): # every location for each pollutant
+    for location, values in locations.items(): # every value for each location
+        avg_concentration = sum(values) / len(values) # average it out
 
-        #print(pollution_data[location])
-        #print(avg_concentration)
+        aqi = calculate_aqi(pollutant, round(avg_concentration)) # use pollutant and averaged concentration calculate AQI
+        pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
+        #print(pollutant_data)
 
-        aqi = calculate_aqi(pollutant, avg_concentration) # use pollutant and averaged concentration calculate AQI
-        pollution_data[location][pollutant] = aqi # Assign the AQI of that pollutant to corresponding location
-
-# Output pollution data
-print(pollution_data)
-with open('processing.json', 'w') as f: # write pollution data to json file
-    json.dump(pollution_data, f, indent = 4) # format out into the json file
+# Generate separate JSON file for each pollutant
+for pol, locations in pollutant_data.items():
+    filename = f"{pol.replace('.','').replace(' ','')}_data.json" # PM2.5 -> PM25_data.json
+    export_heat_data(filename, locations)
