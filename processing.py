@@ -1,5 +1,6 @@
 from collections import defaultdict
 import json
+import subprocess
 
 # TEMPORARY - replace with loop to process Jesara's simulated values off the server
 incoming_data = [
@@ -126,3 +127,12 @@ for pollutant, locations in pollution_data.items(): # every location for each po
 for pol, locations in pollutant_data.items():
     filename = f"{pol.replace('.','').replace(' ','')}_data.json" # PM2.5 -> PM25_data.json
     export_heat_data(filename, locations)
+
+# Upload to git function
+def upload_to_git(commit_msg):
+    try:
+        subprocess.run(["git", "add", "."], check=True)
+        subprocess.run(["git", "commit", "-m", commit_msg], check=True)
+        subprocess.run(["git", "push"], check=True)
+    except subprocess.CalledProcessError as e:
+        print("Error during Git upload: ", e)
