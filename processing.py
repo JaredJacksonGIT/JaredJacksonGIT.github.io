@@ -4,7 +4,7 @@ import subprocess
 
 # TEMPORARY - replace with loop to process Jesara's simulated values off the server
 incoming_data = [
-    {"long" : 33.5, "lat" : 180.2, "pollutant" : "PM2.5", "value" : 33.2},
+    {"long" : -37.8136, "lat" : 144.9631, "pollutant" : "PM2.5", "value" : 33.2},
     {"long" : 33.5, "lat" : 180.2, "pollutant" : "PM2.5", "value" : 30.8},
     {"long" : 34.2, "lat" : 182.7, "pollutant" : "PM10", "value" : 29.6},
     {"long" : 34.2, "lat" : 182.7, "pollutant" : "PM10", "value" : 30.2},
