@@ -11,8 +11,8 @@ incoming_data = [
 
     {"long" : 400.1, "lat" : 250.1, "pollutant" : "CO2", "value" : 480.2},
     {"long" : 400.1, "lat" : 250.1, "pollutant" : "CO2", "value" : 473.5},
-    {"long" : 405.4, "lat" : 253.9, "pollutant" : "N02", "value" : 53.2},
-    {"long" : 405.4, "lat" : 253.9, "pollutant" : "N02", "value" : 49.8},
+    {"long" : 405.4, "lat" : 253.9, "pollutant" : "NO2", "value" : 53.2},
+    {"long" : 405.4, "lat" : 253.9, "pollutant" : "NO2", "value" : 49.8},
 
     {"long" : 200.1, "lat" : 70.5, "pollutant" : "PM2.5", "value" : 193.2},
     {"long" : 200.1, "lat" : 70.5, "pollutant" : "PM2.5", "value" : 203.1},
@@ -45,7 +45,7 @@ breakpoints = {
         (505.0, 604.0, 401, 500)
     ],
 
-    "N02": [ # ppb
+    "NO2": [ # ppb
         (0.0, 53.0, 0, 50),
         (54.0, 100.0, 51, 100),
         (101.0, 360.0, 101, 150),
@@ -96,7 +96,8 @@ def calculate_aqi(pol, conc):
         return None # if the pollutant doesn't exist in breakpoints dictionary
     for C_low, C_high, I_low, I_high in breakpoints[pol]:
         if C_low <= conc <= C_high:
-            return round(((I_high - I_low) / (C_high - C_low)) * (conc - C_low) + I_low)
+            aqi = round( ((I_high - I_low) / (C_high - C_low)) * (conc - C_low) + I_low)
+            return aqi/500.0
     return None # if the conc doesn't afll within defined range
 
 # Container to hold the location and sensor readings SORTED BY POLLUTANT
@@ -131,8 +132,11 @@ for pol, locations in pollutant_data.items():
 # Upload to git function
 def upload_to_git(commit_msg):
     try:
+        subprocess.run(["git", "pull"], check=True)
         subprocess.run(["git", "add", "."], check=True)
         subprocess.run(["git", "commit", "-m", commit_msg], check=True)
         subprocess.run(["git", "push"], check=True)
     except subprocess.CalledProcessError as e:
         print("Error during Git upload: ", e)
+
+upload_to_git('test message please work i pray')
