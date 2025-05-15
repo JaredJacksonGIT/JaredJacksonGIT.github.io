@@ -121,16 +121,15 @@ locations = [
     [-37.8858, 145.0030],  # Elsternwick
 ]
 
-
 #normalise each value to between 0 - 1
 def norm(min_expected, current, max_total):
     intensity = ((current - min_expected) / (max_total - min_expected))
     return intensity
 
-def CO():
-    min_expected = 0.1;
-    max_low = 10; #below this value returns low, above returns high
-    max_total = 30;
+def CO(): # carbon monoxide
+    min_expected = 0.0
+    max_low = 55 #ppm, below this value returns low, above returns high
+    max_total = 300
 
     current = rand.uniform(min_expected, max_total) #generated gas value
     intensity = norm(min_expected, current, max_total) #normalised value
@@ -143,10 +142,10 @@ def CO():
     return [current, intensity, strength] #strength: high or low, in case we want to allow user to toggle gases 
                                           #and show severity of one gas at a time on the map
 
-def CO2():
-    min_expected = 400;
-    max_low = 1000; #ppm
-    max_total = 5000;
+def CO2(): # carbon dioxide
+    min_expected = 400
+    max_low = 1000 #ppm
+    max_total = 5000
 
     current = rand.uniform(min_expected, max_total)
     intensity = norm(min_expected, current, max_total)
@@ -158,10 +157,10 @@ def CO2():
 
     return [current, intensity, strength]
 
-def CH4():
-    min_expected = 1.7;
+def CH4(): # methane
+    min_expected = 1.7
     max_low = 100; #ppm
-    max_total = 1000;
+    max_total = 1000
 
     current = rand.uniform(min_expected, max_total)
     intensity = norm(min_expected, current, max_total)
@@ -173,10 +172,10 @@ def CH4():
 
     return [current, intensity, strength]
 
-def VOC():
-    min_expected = 0.01;
+def VOC(): # volatile organic compounds
+    min_expected = 0.0
     max_low = 0.66 #ppm
-    max_total = 2.2;
+    max_total = 5.5
 
     current = rand.uniform(min_expected, max_total)
     intensity = norm(min_expected, current, max_total)
@@ -188,13 +187,76 @@ def VOC():
 
     return [current, intensity, strength]
 
+def PM25(): # pm2.5
+    min_expected = 0.0
+    max_low = 75 #μg/m3
+    max_total = 300
 
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
+
+def PM10(): # pm10
+    min_expected = 0.0
+    max_low = 100 #μg/m3
+    max_total = 300
+
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
+
+def NO2(): # nitrogen dioxide
+    min_expected = 10
+    max_low = 150 #ppb
+    max_total = 360
+
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
+
+def O3(): # ozone
+    min_expected = 20
+    max_low = 125 #ppb
+    max_total = 300
+
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
 
 for location in locations:
     loc_CO = CO()
     loc_CO2 = CO2()
     loc_CH4 = CH4()
     loc_VOC = VOC()
-    avgVal = ((loc_CO[1] + loc_CO2[1] + loc_CH4[1] + loc_VOC[1]) / 4)
+    loc_PM25 = PM25()
+    loc_PM10 = PM10()
+    loc_NO2 = NO2()
+    loc_O3 = O3()
+
+    avgVal = ((loc_CO[1] + loc_CO2[1] + loc_CH4[1] + loc_VOC[1] + loc_PM25[1] + loc_PM10[1] + loc_NO2[1] + loc_O3[1]) / 8)
     updatedArray = location + [round(avgVal, 3)]
     print(f"{updatedArray}")
