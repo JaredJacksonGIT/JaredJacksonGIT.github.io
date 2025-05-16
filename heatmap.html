@@ -93,7 +93,7 @@
   };
 
   async function loadHeatData(name) {
-    const res = await fetch(`${name}_data.json`);
+    const res = await fetch(`emissions_data/${name}_data.json`);
     const rawData = await res.json();
     currentHeatData = rawData;
 

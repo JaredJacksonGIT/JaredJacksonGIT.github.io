@@ -1,24 +1,33 @@
 from collections import defaultdict
 import json
 import subprocess
+import os
+
+script_dir  = os.path.dirname(os.path.abspath(__file__))
+output_dir  = os.path.join(script_dir, 'emissions_data')
 
 # TEMPORARY - replace with loop to process Jesara's simulated values off the server
 incoming_data = [
-    {"long" : -37.8136, "lat" : 144.9631, "pollutant" : "PM2.5", "value" : 33.2},
-    {"long" : 33.5, "lat" : 180.2, "pollutant" : "PM2.5", "value" : 30.8},
-    {"long" : 34.2, "lat" : 182.7, "pollutant" : "PM10", "value" : 29.6},
-    {"long" : 34.2, "lat" : 182.7, "pollutant" : "PM10", "value" : 30.2},
+    # PM2.5 readings at Melbourne CBD and Carlton
+    {"long": -37.8136, "lat": 144.9631, "pollutant": "PM2.5", "value": 33.2},
+    {"long": -37.8000, "lat": 144.9636, "pollutant": "PM2.5", "value": 30.8},
 
-    {"long" : 400.1, "lat" : 250.1, "pollutant" : "CO2", "value" : 480.2},
-    {"long" : 400.1, "lat" : 250.1, "pollutant" : "CO2", "value" : 473.5},
-    {"long" : 405.4, "lat" : 253.9, "pollutant" : "NO2", "value" : 53.2},
-    {"long" : 405.4, "lat" : 253.9, "pollutant" : "NO2", "value" : 49.8},
+    # PM10 readings at Fitzroy and Southbank
+    {"long": -37.7982, "lat": 144.9790, "pollutant": "PM10",  "value": 29.6},
+    {"long": -37.8203, "lat": 144.9640, "pollutant": "PM10",  "value": 30.2},
 
-    {"long" : 200.1, "lat" : 70.5, "pollutant" : "PM2.5", "value" : 193.2},
-    {"long" : 200.1, "lat" : 70.5, "pollutant" : "PM2.5", "value" : 203.1},
-    {"long" : 201.7, "lat" : 69.2, "pollutant" : "VOCs", "value" : 0.572},
-    {"long" : 201.7, "lat" : 69.2, "pollutant" : "VOCs", "value" : 0.551},
-    {"long" : 201.7, "lat" : 69.2, "pollutant" : "VOCs", "value" : 0.492}
+    # CO2 readings at St Kilda and Richmond
+    {"long": -37.8675, "lat": 144.9785, "pollutant": "CO2",   "value": 480.2},
+    {"long": -37.8236, "lat": 144.9832, "pollutant": "CO2",   "value": 473.5},
+
+    # NO2 readings at Brunswick and Collingwood
+    {"long": -37.7750, "lat": 144.9660, "pollutant": "NO2",   "value": 53.2},
+    {"long": -37.8002, "lat": 144.9793, "pollutant": "NO2",   "value": 49.8},
+
+    # VOC readings at Docklands and Port Melbourne
+    {"long": -37.8167, "lat": 144.9460, "pollutant": "VOCs",  "value": 0.572},
+    {"long": -37.8366, "lat": 144.9102, "pollutant": "VOCs",  "value": 0.551},
+    {"long": -37.8167, "lat": 144.9460, "pollutant": "VOCs",  "value": 0.492},
 ]
 
 # Breakpoints to calculate AQI (C_low, C_high, I_low, I_high)
@@ -86,9 +95,10 @@ breakpoints = {
 }
 
 def export_heat_data(filename, data):
+    filepath = os.path.join(output_dir, filename)
     heatmap_data = [[lat, lon, aqi[0]] for (lat, lon), aqi in data.items()]
-    with open(filename, 'w') as f: # write pollution data to json file
-        json.dump(heatmap_data, f) # format out into the json file
+    with open(filepath, 'w') as f:
+        json.dump(heatmap_data, f)
 
 # AQI calculation formulas for each pollutant
 def calculate_aqi(pol, conc):
