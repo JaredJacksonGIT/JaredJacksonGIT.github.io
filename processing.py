@@ -149,4 +149,4 @@ def upload_to_git(commit_msg):
     except subprocess.CalledProcessError as e:
         print("Error during Git upload: ", e)
 
-upload_to_git('test message please work i pray')
+upload_to_git('Automated data upload')
