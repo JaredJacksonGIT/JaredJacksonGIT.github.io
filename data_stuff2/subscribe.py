@@ -38,15 +38,19 @@ def subscribe(client: mqtt):
     client.on_message = on_message
 
 def create_dict(msg):
-    msg_str = msg.payload.decode()
+    msg_str = msg.payload.decode().strip()
     msg_array = msg_str.split()
-    long = msg_array[0]
-    lat = msg_array[1]
+    long = float(msg_array[0])
+    lat = float(msg_array[1])
+    co = float(msg_array[2])
+    co2 = float(msg_array[3])
+    ch4 = float(msg_array[4])
+    voc = float(msg_array[5])
     return [
-        {"long" : float(long), "lat" : float(lat), "pollutant" : "CO", "value" : float(msg_array[2])},
-        {"long" : float(long), "lat" : float(lat), "pollutant" : "CO2", "value" : float(msg_array[3])},
-        {"long" : float(long), "lat" : float(lat), "pollutant" : "CH4", "value" : float(msg_array[4])},
-        {"long" : float(long), "lat" : float(lat), "pollutant" : "VOC", "value" : float(msg_array[5])}
+        {"long" : long, "lat" : lat, "pollutant" : "CO", "value" : co},
+        {"long" : long, "lat" : lat, "pollutant" : "CO2", "value" : co2},
+        {"long" : long, "lat" : lat, "pollutant" : "CH4", "value" : ch4},
+        {"long" : long, "lat" : lat, "pollutant" : "VOC", "value" : voc}
     ]
 
 def start_mqtt():
