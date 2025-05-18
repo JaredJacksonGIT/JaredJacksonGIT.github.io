@@ -7,6 +7,12 @@ from data_stuff2.subscribe import message_queue, start_mqtt
 script_dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.join(script_dir, 'emissions_data')
 
+# Container to hold the location and sensor readings SORTED BY POLLUTANT
+pollution_data = defaultdict(lambda: defaultdict(list))
+
+# Container to hold location and AQI SORTED BY POLLUTANT
+pollutant_data = defaultdict(lambda: defaultdict(list))
+
 start_mqtt()
 
 print("Waiting for messages...")
@@ -114,7 +120,7 @@ while True:
             return None # if the conc doesn't afll within defined range
 
         # Container to hold the location and sensor readings SORTED BY POLLUTANT
-        pollution_data = defaultdict(lambda: defaultdict(list))
+        #pollution_data = defaultdict(lambda: defaultdict(list))
 
         # Pair readings with the location SORTED BY POLLUTANT (long, lat, value)
         for entry in msg:
@@ -126,7 +132,7 @@ while True:
             print(pollution_data)
 
         # Container to hold location and AQI SORTED BY POLLUTANT
-        pollutant_data = defaultdict(lambda: defaultdict(list))
+        #pollutant_data = defaultdict(lambda: defaultdict(list))
 
         # Average out concentration values before calculating AQI
         for pollutant, locations in pollution_data.items(): # every location for each pollutant
