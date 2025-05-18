@@ -123,7 +123,7 @@ while True:
             value = float(entry["value"]) # sensor reading (raw values)
 
             pollution_data[pollutant][location].append(value)
-            #print(pollution_data)
+            print(pollution_data)
 
         # Container to hold location and AQI SORTED BY POLLUTANT
         pollutant_data = defaultdict(lambda: defaultdict(list))
@@ -136,7 +136,7 @@ while True:
                 aqi = calculate_aqi(pollutant, round(avg_concentration)) # use pollutant and averaged concentration calculate AQI
                 if aqi is not None:
                     pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
-                #print(pollutant_data)
+                print(pollutant_data)
 
         # Generate separate JSON file for each pollutant
         for pol, locations in pollutant_data.items():
