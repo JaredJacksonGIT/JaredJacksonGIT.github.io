@@ -80,12 +80,12 @@ while True:
             ],
 
             "CH4": [ # ppm
-                (0.0, 0.220, 0, 50),
-                (0.221, 0.660, 51, 100),
-                (0.661, 2.200, 101, 150),
-                (2.201, 5.500, 151, 200),
-                (5.501, 11.000, 201, 300),
-                (11.001, 22.000, 301, 400)
+                (1.7, 50.0, 0, 50),
+                (50.1, 150.0, 51, 100),
+                (150.1, 300.0, 101, 150),
+                (300.1, 500.0, 151, 200),
+                (500.1, 750.0, 201, 300),
+                (750.1, 1000.0, 301, 400)
             ],
 
             "O3": [ # ppm
@@ -99,7 +99,7 @@ while True:
 
         def export_heat_data(filename, data):
             filepath = os.path.join(output_dir, filename)
-            heatmap_data = [[lat, lon, aqi[0]] for (lat, lon), aqi in data.items()]
+            heatmap_data = [[lat, lon, sum(aqi)/len(aqi)] for (lat, lon), aqi in data.items()]
             with open(filepath, 'w') as f:
                 json.dump(heatmap_data, f)
 
