@@ -99,7 +99,7 @@ while True:
 
         def export_heat_data(filename, data):
             filepath = os.path.join(output_dir, filename)
-            heatmap_data = [[lat, lon, sum(aqi)/len(aqi)] for (lat, lon), aqi in data.items()]
+            heatmap_data = [[lat, lon, sum(aqi)/len(aqi)] for (lat, lon), aqi in data.items() if len(aqi) > 0]
             with open(filepath, 'w') as f:
                 json.dump(heatmap_data, f)
 
@@ -134,7 +134,8 @@ while True:
                 avg_concentration = sum(values) / len(values) # average it out
 
                 aqi = calculate_aqi(pollutant, round(avg_concentration)) # use pollutant and averaged concentration calculate AQI
-                pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
+                if aqi is not None:
+                    pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
                 #print(pollutant_data)
 
         # Generate separate JSON file for each pollutant
