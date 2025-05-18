@@ -70,6 +70,24 @@ while True:
                 (11.001, 22.000, 301, 400)
             ],
 
+            "VOC": [ # ppm
+                (0.0, 0.220, 0, 50),
+                (0.221, 0.660, 51, 100),
+                (0.661, 2.200, 101, 150),
+                (2.201, 5.500, 151, 200),
+                (5.501, 11.000, 201, 300),
+                (11.001, 22.000, 301, 400)
+            ],
+
+            "CH4": [ # ppm
+                (0.0, 0.220, 0, 50),
+                (0.221, 0.660, 51, 100),
+                (0.661, 2.200, 101, 150),
+                (2.201, 5.500, 151, 200),
+                (5.501, 11.000, 201, 300),
+                (11.001, 22.000, 301, 400)
+            ],
+
             "O3": [ # ppm
                 (0.0, 0.054, 0, 50),
                 (0.055, 0.070, 51, 100),
@@ -105,7 +123,7 @@ while True:
             value = float(entry["value"]) # sensor reading (raw values)
 
             pollution_data[pollutant][location].append(value)
-            print(pollution_data)
+            #print(pollution_data)
 
         # Container to hold location and AQI SORTED BY POLLUTANT
         pollutant_data = defaultdict(lambda: defaultdict(list))
@@ -117,7 +135,7 @@ while True:
 
                 aqi = calculate_aqi(pollutant, round(avg_concentration)) # use pollutant and averaged concentration calculate AQI
                 pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
-                print(pollutant_data)
+                #print(pollutant_data)
 
         # Generate separate JSON file for each pollutant
         for pol, locations in pollutant_data.items():
