@@ -11,7 +11,7 @@ try:
             data = sim.generate_data(location)
             ser.write((data + '\n').encode())
             print(f"Sent: {data}")
-            time.sleep(2)
+            time.sleep(1)
         time.sleep(180)
 except KeyboardInterrupt:
     print("Simulation stopped.")
