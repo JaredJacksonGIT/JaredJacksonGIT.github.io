@@ -25,7 +25,7 @@ while True:
         # https://aqs.epa.gov/aqsweb/documents/codetables/aqi_breakpoints.html
         breakpoints = {
             # PM2.5, PM10, N02, CO, CO2, VOCs, O3
-            "PM2.5": [ # μg/m³
+            "PM25": [ # μg/m³
                 (0.0, 12.0, 0, 50),
                 (12.1, 35.4, 51, 100),
                 (35.5, 55.4, 101, 150),
