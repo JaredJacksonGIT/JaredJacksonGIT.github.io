@@ -58,7 +58,7 @@ def create_dict(msg):
         {"long" : long, "lat" : lat, "pollutant" : "CO2", "value" : co2},
         {"long" : long, "lat" : lat, "pollutant" : "VOC", "value" : voc},
         {"long" : long, "lat" : lat, "pollutant" : "CH4", "value" : ch4},
-        {"long" : long, "lat" : lat, "pollutant" : "O3", "value" : o3},
+        {"long" : long, "lat" : lat, "pollutant" : "O3", "value" : o3}
     ]
 
 def start_mqtt():
