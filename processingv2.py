@@ -121,7 +121,11 @@ while True:
         msg = message_queue.get()
 
         try:
-            line = msg.decode().strip() if isinstance(msg, bytes) else msg.strip()
+            if isinstance(msg, list) and len(msg) == 1:
+                line = msg[0].strip()
+            else:
+                line = msg.decode().strip() if isinstance(msg, bytes) else msg.strip()
+                
             print("Received line:", line)
             parts = line.split()
 
