@@ -131,6 +131,7 @@ while True:
             value = float(entry["value"]) # sensor reading (raw values)
 
             pollution_data[pollutant][location].append(value)
+            received_locations[pollutant].add(location)
             print(pollution_data)
 
         all_ready = all(len(locations) >= EXPECTED_LOCATIONS for locations in received_locations.values())
