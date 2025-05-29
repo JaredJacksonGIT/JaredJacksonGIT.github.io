@@ -14,7 +14,7 @@ pollution_data = defaultdict(lambda: defaultdict(list))
 pollutant_data = defaultdict(lambda: defaultdict(list))
 
 EXPECTED_LOCATIONS = 110
-received_locations = defaultdict(set)
+received_locations = set()
 
 # Breakpoints to calculate AQI (C_low, C_high, I_low, I_high)
 # https://aqs.epa.gov/aqsweb/documents/codetables/aqi_breakpoints.html
@@ -119,23 +119,34 @@ print("Waiting for messages...")
 while True:
     if not message_queue.empty():
         msg = message_queue.get()
-        print("Received message dict:", msg)
 
-        # Container to hold the location and sensor readings SORTED BY POLLUTANT
-        #pollution_data = defaultdict(lambda: defaultdict(list))
+        try:
+            line = msg.decode().strip() if isinstance(msg, bytes) else msg.strip()
+            print("Received line:", line)
+            parts = line.split()
 
-        # Pair readings with the location SORTED BY POLLUTANT (long, lat, value)
-        for entry in msg:
-            location = (entry["long"], entry["lat"])
-            pollutant = entry["pollutant"]
-            value = float(entry["value"]) # sensor reading (raw values)
+            if len(parts) != 10:
+                print("Invalid message format:", line)
+                continue
 
-            pollution_data[pollutant][location].append(value)
-            received_locations[pollutant].add(location)
-            print(pollution_data)
+            lat, lon = float(parts[0]), float(parts[1])
+            values = list(map(float, parts[2:]))
+            location = (lon, lat)
 
-        all_ready = all(len(locations) >= EXPECTED_LOCATIONS for locations in received_locations.values())
-        if all_ready:
+            if location in received_locations:
+                print("Duplicate location received, skipping:", location)
+                continue
+            
+            received_locations.add(location)
+
+            for i, pollutant in enumerate(["PM25", "PM10", "NO2", "CO", "CO2", "VOC", "CH4", "O3"]):
+                pollution_data[pollutant][location].append(values[i])
+        
+        except Exception as e:
+            print("Error parsing message:", e)
+
+        print(f"Currently received {len(received_locations)} of {EXPECTED_LOCATIONS} locations.")
+        if len(received_locations) >= EXPECTED_LOCATIONS:
             print("All data received. Calculating AQI...")
 
             # Average out concentration values before calculating AQI
