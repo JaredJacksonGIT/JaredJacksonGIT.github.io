@@ -262,4 +262,4 @@ def generate_data(location):
     loc_CH4 = CH4()
     loc_O3 = O3()
 
-    return f"{location[0]} {location[1]} {loc_PM25[0]} {loc_PM10[0]} {loc_NO2[0]} {loc_CO[0]} {loc_CO2[0]} {loc_CH4[0]} {loc_VOC[0]} {loc_O3[0]}"
+    return f"{location[0]} {location[1]} {loc_PM25[0]} {loc_PM10[0]} {loc_NO2[0]} {loc_CO[0]} {loc_CO2[0]} {loc_VOC[0]} {loc_CH4[0]} {loc_O3[0]}"
