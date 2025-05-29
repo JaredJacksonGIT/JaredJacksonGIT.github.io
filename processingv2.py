@@ -119,35 +119,39 @@ print("Waiting for messages...")
 while True:
     if not message_queue.empty():
         msg = message_queue.get()
+        print("Received message dict:", msg)
 
-        try:
-            if isinstance(msg, list) and len(msg) == 1:
-                line = msg[0].strip()
-            else:
-                line = msg.decode().strip() if isinstance(msg, bytes) else msg.strip()
-                
-            print("Received line:", line)
-            parts = line.split()
+        for entry in msg:
+            location = (entry["long"], entry["lat"])
+            pollutant = entry["pollutant"]
+            value = float(entry["value"])
 
-            if len(parts) != 10:
-                print("Invalid message format:", line)
-                continue
-
-            lat, lon = float(parts[0]), float(parts[1])
-            values = list(map(float, parts[2:]))
-            location = (lon, lat)
-
-            if location in received_locations:
-                print("Duplicate location received, skipping:", location)
-                continue
-            
+            pollution_data[pollutant][location].append(value)
             received_locations.add(location)
 
-            for i, pollutant in enumerate(["PM25", "PM10", "NO2", "CO", "CO2", "VOC", "CH4", "O3"]):
-                pollution_data[pollutant][location].append(values[i])
+        print(f"Currently received {len(received_locations)} of {EXPECTED_LOCATIONS} locations.")
         
-        except Exception as e:
-            print("Error parsing message:", e)
+        if len(received_locations) >= EXPECTED_LOCATIONS:
+            print("All data received. Calculating AQI...")
+
+            for pollutant, locations in pollution_data.items():
+                for location, values in locations.items():
+                    avg_concentration = sum(values) / len(values)
+                    aqi = calculate_aqi(pollutant, round(avg_concentration))
+                    if aqi is not None:
+                        pollutant_data[pollutant][location].append(aqi)
+
+            for pol, locations in pollutant_data.items():
+                filename = f"{pol.replace('.', '').replace(' ', '')}_data.json"
+                export_heat_data(filename, locations)
+
+            upload_to_git('Automated data upload')
+
+            # Reset for next round
+            pollution_data.clear()
+            pollutant_data.clear()
+            received_locations.clear()
+            print("Ready for next data cycle.\n")
 
         print(f"Currently received {len(received_locations)} of {EXPECTED_LOCATIONS} locations.")
         if len(received_locations) >= EXPECTED_LOCATIONS:
