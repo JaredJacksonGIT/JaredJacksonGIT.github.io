@@ -14,7 +14,7 @@ pollution_data = defaultdict(lambda: defaultdict(list))
 # Container to hold location and AQI SORTED BY POLLUTANT
 pollutant_data = defaultdict(lambda: defaultdict(list))
 
-EXPECTED_LOCATIONS = 110
+EXPECTED_LOCATIONS = 107
 received_locations = set()
 
 # Breakpoints to calculate AQI (C_low, C_high, I_low, I_high)

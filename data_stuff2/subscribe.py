@@ -5,7 +5,7 @@ import queue
 broker = "mfa20a52.ala.asia-southeast1.emqxsl.com"
 port = 8883
 topic = "esp32/receiving"
-client_id = f"heatmap-{random.randint(0, 1000)}" 
+client_id = f"heatmap-{random.randint(0, 1000)}"
 
 username = password = "admin"
 
@@ -31,6 +31,7 @@ def connect_mqtt():
 
 def subscribe(client: mqtt):
     def on_message(client, userdata, msg):
+        print(f"MQTT Received:{msg.payload.decode().strip()}")
         msg_dict = create_dict(msg)
         message_queue.put(msg_dict)
 
@@ -45,7 +46,7 @@ def create_dict(msg):
         print("Skipping malformed message:", msg_str)
         with open("bad_messages.log", "a") as f:
             f.write(msg_str + "\n")
-            
+
         return []
     
     long = float(msg_array[0])
