@@ -7,6 +7,12 @@ from data_stuff2.subscribe import message_queue, start_mqtt
 script_dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.join(script_dir, 'emissions_data')
 
+# Container to hold the location and sensor readings SORTED BY POLLUTANT
+pollution_data = defaultdict(lambda: defaultdict(list))
+
+# Container to hold location and AQI SORTED BY POLLUTANT
+pollutant_data = defaultdict(lambda: defaultdict(list))
+
 start_mqtt()
 
 print("Waiting for messages...")
@@ -80,12 +86,12 @@ while True:
             ],
 
             "CH4": [ # ppm
-                (0.0, 0.220, 0, 50),
-                (0.221, 0.660, 51, 100),
-                (0.661, 2.200, 101, 150),
-                (2.201, 5.500, 151, 200),
-                (5.501, 11.000, 201, 300),
-                (11.001, 22.000, 301, 400)
+                (1.7, 50.0, 0, 50),
+                (50.1, 150.0, 51, 100),
+                (150.1, 300.0, 101, 150),
+                (300.1, 500.0, 151, 200),
+                (500.1, 750.0, 201, 300),
+                (750.1, 1000.0, 301, 400)
             ],
 
             "O3": [ # ppm
@@ -99,7 +105,7 @@ while True:
 
         def export_heat_data(filename, data):
             filepath = os.path.join(output_dir, filename)
-            heatmap_data = [[lat, lon, aqi[0]] for (lat, lon), aqi in data.items()]
+            heatmap_data = [[lat, lon, sum(aqi)/len(aqi)] for (lat, lon), aqi in data.items() if len(aqi) > 0]
             with open(filepath, 'w') as f:
                 json.dump(heatmap_data, f)
 
@@ -114,7 +120,7 @@ while True:
             return None # if the conc doesn't afll within defined range
 
         # Container to hold the location and sensor readings SORTED BY POLLUTANT
-        pollution_data = defaultdict(lambda: defaultdict(list))
+        #pollution_data = defaultdict(lambda: defaultdict(list))
 
         # Pair readings with the location SORTED BY POLLUTANT (long, lat, value)
         for entry in msg:
@@ -123,10 +129,10 @@ while True:
             value = float(entry["value"]) # sensor reading (raw values)
 
             pollution_data[pollutant][location].append(value)
-            #print(pollution_data)
+            print(pollution_data)
 
         # Container to hold location and AQI SORTED BY POLLUTANT
-        pollutant_data = defaultdict(lambda: defaultdict(list))
+        #pollutant_data = defaultdict(lambda: defaultdict(list))
 
         # Average out concentration values before calculating AQI
         for pollutant, locations in pollution_data.items(): # every location for each pollutant
@@ -134,8 +140,9 @@ while True:
                 avg_concentration = sum(values) / len(values) # average it out
 
                 aqi = calculate_aqi(pollutant, round(avg_concentration)) # use pollutant and averaged concentration calculate AQI
-                pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
-                #print(pollutant_data)
+                if aqi is not None:
+                    pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
+                print(pollutant_data)
 
         # Generate separate JSON file for each pollutant
         for pol, locations in pollutant_data.items():
