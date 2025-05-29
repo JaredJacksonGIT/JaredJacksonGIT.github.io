@@ -7,10 +7,11 @@ time.sleep(2)
 
 try:
     while True:
-        data = sim.generate_data()
-        ser.write((data + '\n').encode())
-        print(f"Sent: {data}")
-        time.sleep(5)
+        for location in sim.locations:
+            data = sim.generate_data(location)
+            ser.write((data + '\n').encode())
+            print(f"Sent: {data}")
+        time.sleep(180)
 except KeyboardInterrupt:
     print("Simulation stopped.")
     ser.close()

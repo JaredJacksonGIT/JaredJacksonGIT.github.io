@@ -1,5 +1,8 @@
 import numpy as np
 import random as rand
+import serial
+import time
+import data_sim_mod as sim
 
 locations = [
     [-37.8136, 144.9631],  # Melbourne
@@ -188,9 +191,68 @@ def VOC():
 
     return [current, intensity, strength]
 
+def PM25(): # pm2.5
+    min_expected = 0.0
+    max_low = 75 #μg/m3
+    max_total = 300
 
-def generate_data():
-    location = rand.choice(locations)
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
+
+def PM10(): # pm10
+    min_expected = 0.0
+    max_low = 100 #μg/m3
+    max_total = 300
+
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
+
+def NO2(): # nitrogen dioxide
+    min_expected = 10
+    max_low = 150 #ppb
+    max_total = 360
+
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
+
+def O3(): # ozone
+    min_expected = 20
+    max_low = 125 #ppb
+    max_total = 300
+
+    current = rand.uniform(min_expected, max_total)
+    intensity = norm(min_expected, current, max_total)
+
+    if ((current >= min_expected) and (current <= max_low)):
+        strength = "LOW"
+    elif current > max_low:
+        strength = "HIGH"
+
+    return [current, intensity, strength]
+
+
+def generate_data(location):
     loc_CO = CO()
     loc_CO2 = CO2()
     loc_CH4 = CH4()
