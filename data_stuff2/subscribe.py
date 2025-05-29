@@ -47,12 +47,12 @@ def create_dict(msg):
     no2 = float(msg_array[4])
     co = float(msg_array[5])
     co2 = float(msg_array[6])
-    ch4 = float(msg_array[7])
-    voc = float(msg_array[8])
+    voc = float(msg_array[7])
+    ch4 = float(msg_array[8])
     o3 = float(msg_array[9])
     return [
         {"long" : long, "lat" : lat, "pollutant" : "PM25", "value" : pm25},
-        {"long" : long, "lat" : lat, "pollutant" : "PM25", "value" : pm10},
+        {"long" : long, "lat" : lat, "pollutant" : "PM10", "value" : pm10},
         {"long" : long, "lat" : lat, "pollutant" : "NO2", "value" : no2},
         {"long" : long, "lat" : lat, "pollutant" : "CO", "value" : co},
         {"long" : long, "lat" : lat, "pollutant" : "CO2", "value" : co2},
