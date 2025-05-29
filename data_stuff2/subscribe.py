@@ -42,15 +42,23 @@ def create_dict(msg):
     msg_array = msg_str.split()
     long = float(msg_array[0])
     lat = float(msg_array[1])
-    co = float(msg_array[2])
-    co2 = float(msg_array[3])
-    ch4 = float(msg_array[4])
-    voc = float(msg_array[5])
+    pm25 = float(msg_array[2])
+    pm10 = float(msg_array[3])
+    no2 = float(msg_array[4])
+    co = float(msg_array[5])
+    co2 = float(msg_array[6])
+    ch4 = float(msg_array[7])
+    voc = float(msg_array[8])
+    o3 = float(msg_array[9])
     return [
+        {"long" : long, "lat" : lat, "pollutant" : "PM25", "value" : pm25},
+        {"long" : long, "lat" : lat, "pollutant" : "PM25", "value" : pm10},
+        {"long" : long, "lat" : lat, "pollutant" : "NO2", "value" : no2},
         {"long" : long, "lat" : lat, "pollutant" : "CO", "value" : co},
         {"long" : long, "lat" : lat, "pollutant" : "CO2", "value" : co2},
+        {"long" : long, "lat" : lat, "pollutant" : "VOC", "value" : voc},
         {"long" : long, "lat" : lat, "pollutant" : "CH4", "value" : ch4},
-        {"long" : long, "lat" : lat, "pollutant" : "VOC", "value" : voc}
+        {"long" : long, "lat" : lat, "pollutant" : "O3", "value" : o3},
     ]
 
 def start_mqtt():
