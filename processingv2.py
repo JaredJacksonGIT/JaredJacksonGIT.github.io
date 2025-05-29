@@ -3,6 +3,7 @@ import json
 import subprocess
 import os
 from data_stuff2.subscribe import message_queue, start_mqtt
+import time
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.join(script_dir, 'emissions_data')
@@ -114,6 +115,7 @@ def upload_to_git(commit_msg):
         print("Error during Git upload: ", e)
 
 start_mqtt()
+time.sleep(2)
 print("Waiting for messages...")
 
 while True:
@@ -148,30 +150,6 @@ while True:
             upload_to_git('Automated data upload')
 
             # Reset for next round
-            pollution_data.clear()
-            pollutant_data.clear()
-            received_locations.clear()
-            print("Ready for next data cycle.\n")
-
-        print(f"Currently received {len(received_locations)} of {EXPECTED_LOCATIONS} locations.")
-        if len(received_locations) >= EXPECTED_LOCATIONS:
-            print("All data received. Calculating AQI...")
-
-            # Average out concentration values before calculating AQI
-            for pollutant, locations in pollution_data.items(): # every location for each pollutant
-                for location, values in locations.items(): # every value for each location
-                    avg_concentration = sum(values) / len(values) # average it out
-                    aqi = calculate_aqi(pollutant, round(avg_concentration)) # use pollutant and averaged concentration calculate AQI
-                    if aqi is not None:
-                        pollutant_data[pollutant][location].append((aqi)) # Assign the AQI of that pollutant to corresponding location
-
-            # Generate separate JSON file for each pollutant
-            for pol, locations in pollutant_data.items():
-                filename = f"{pol.replace('.','').replace(' ','')}_data.json" # PM2.5 -> PM25_data.json
-                export_heat_data(filename, locations)
-
-            upload_to_git('Automated data upload')
-
             pollution_data.clear()
             pollutant_data.clear()
             received_locations.clear()
