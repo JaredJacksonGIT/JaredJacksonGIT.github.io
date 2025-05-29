@@ -40,6 +40,14 @@ def subscribe(client: mqtt):
 def create_dict(msg):
     msg_str = msg.payload.decode().strip()
     msg_array = msg_str.split()
+
+    if len(msg_array) != 10:
+        print("Skipping malformed message:", msg_str)
+        with open("bad_messages.log", "a") as f:
+            f.write(msg_str + "\n")
+            
+        return []
+    
     long = float(msg_array[0])
     lat = float(msg_array[1])
     pm25 = float(msg_array[2])
