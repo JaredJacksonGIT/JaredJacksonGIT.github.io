@@ -20,15 +20,13 @@ received_locations = set()
 # Breakpoints to calculate AQI (C_low, C_high, I_low, I_high)
 # https://aqs.epa.gov/aqsweb/documents/codetables/aqi_breakpoints.html
 breakpoints = {
-    # PM2.5, PM10, N02, CO, CO2, VOCs, O3
+    # PM2.5, PM10, N02, CO, CO2, VOC, O3
     "PM25": [ # μg/m³
         (0.0, 12.0, 0, 50),
         (12.1, 35.4, 51, 100),
         (35.5, 55.4, 101, 150),
         (55.5, 150.4, 151, 200),
-        (150.5, 250.4, 201, 300),
-        (250.5, 350.4, 301, 400),
-        (350.5, 500.4, 401, 500)
+        (150.5, 250.4, 201, 300)
     ],
 
     "PM10": [ # μg/m³
@@ -36,9 +34,7 @@ breakpoints = {
         (55.0, 154.0, 51, 100),
         (155.0, 254.0, 101, 150),
         (255.0, 354.0, 151, 200),
-        (355.0, 424.0, 201, 300),
-        (425.0, 504.0, 301, 400),
-        (505.0, 604.0, 401, 500)
+        (355.0, 424.0, 201, 300)
     ],
 
     "NO2": [ # ppb
@@ -75,8 +71,7 @@ breakpoints = {
         (50.1, 150.0, 51, 100),
         (150.1, 300.0, 101, 150),
         (300.1, 500.0, 151, 200),
-        (500.1, 750.0, 201, 300),
-        (750.1, 1000.0, 301, 400)
+        (500.1, 750.0, 201, 300)
     ],
 
     "O3": [ # ppm
@@ -101,7 +96,7 @@ def calculate_aqi(pol, conc):
     for C_low, C_high, I_low, I_high in breakpoints[pol]:
         if C_low <= conc <= C_high:
             aqi = round( ((I_high - I_low) / (C_high - C_low)) * (conc - C_low) + I_low)
-            return aqi/500.0
+            return aqi/300.0
     return None # if the conc doesn't afll within defined range
 
 # Upload to git function
