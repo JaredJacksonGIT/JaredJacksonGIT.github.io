@@ -115,9 +115,9 @@ time.sleep(2)
 print("Waiting for messages...")
 
 while True:
-    start_time = time.time()
+    last_received_time = time.time()
 
-    while len(received_locations) < EXPECTED_LOCATIONS and time.time() - start_time < MAX_WAIT_TIME:
+    while len(received_locations) < EXPECTED_LOCATIONS:
         if not message_queue.empty():
             msg = message_queue.get()
             print("Received message dict:", msg)
@@ -131,8 +131,12 @@ while True:
                 received_locations.add(location)
 
             print(f"Currently received {len(received_locations)} of {EXPECTED_LOCATIONS} locations.")
-        else:
-            time.sleep(0.1)
+    
+        if time.time() - last_received_time > MAX_WAIT_TIME:
+            print("Timeout limit reached. Proceeding with available data.")
+            break
+
+        time.sleep(0.1)
         
     print("All data received. Calculating AQI...")
 
