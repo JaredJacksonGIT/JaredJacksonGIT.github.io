@@ -15,6 +15,7 @@ pollution_data = defaultdict(lambda: defaultdict(list))
 pollutant_data = defaultdict(lambda: defaultdict(list))
 
 EXPECTED_LOCATIONS = 107
+MAX_WAIT_TIME = 120
 received_locations = set()
 
 # Breakpoints to calculate AQI (C_low, C_high, I_low, I_high)
@@ -114,38 +115,42 @@ time.sleep(2)
 print("Waiting for messages...")
 
 while True:
-    if not message_queue.empty():
-        msg = message_queue.get()
-        print("Received message dict:", msg)
+    start_time = time.time()
 
-        for entry in msg:
-            location = (entry["long"], entry["lat"])
-            pollutant = entry["pollutant"]
-            value = float(entry["value"])
+    while len(received_locations) < EXPECTED_LOCATIONS and time.time() - start_time < MAX_WAIT_TIME:
+        if not message_queue.empty():
+            msg = message_queue.get()
+            print("Received message dict:", msg)
 
-            pollution_data[pollutant][location].append(value)
-            received_locations.add(location)
+            for entry in msg:
+                location = (entry["long"], entry["lat"])
+                pollutant = entry["pollutant"]
+                value = float(entry["value"])
 
-        print(f"Currently received {len(received_locations)} of {EXPECTED_LOCATIONS} locations.")
+                pollution_data[pollutant][location].append(value)
+                received_locations.add(location)
+
+            print(f"Currently received {len(received_locations)} of {EXPECTED_LOCATIONS} locations.")
+        else:
+            time.sleep(0.1)
         
-        if len(received_locations) >= EXPECTED_LOCATIONS:
-            print("All data received. Calculating AQI...")
+    print("All data received. Calculating AQI...")
 
-            for pollutant, locations in pollution_data.items():
-                for location, values in locations.items():
-                    avg_concentration = sum(values) / len(values)
-                    aqi = calculate_aqi(pollutant, round(avg_concentration))
-                    if aqi is not None:
-                        pollutant_data[pollutant][location].append(aqi)
+    for pollutant, locations in pollution_data.items():
+        for location, values in locations.items():
+            avg_concentration = sum(values) / len(values)
+            aqi = calculate_aqi(pollutant, round(avg_concentration))
+            if aqi is not None:
+                pollutant_data[pollutant][location].append(aqi)
 
-            for pol, locations in pollutant_data.items():
-                filename = f"{pol.replace('.', '').replace(' ', '')}_data.json"
-                export_heat_data(filename, locations)
+    for pol, locations in pollutant_data.items():
+        filename = f"{pol.replace('.', '').replace(' ', '')}_data.json"
+        export_heat_data(filename, locations)
 
-            upload_to_git('Automated data upload')
+    upload_to_git('Automated data upload')
 
-            # Reset for next round
-            pollution_data.clear()
-            pollutant_data.clear()
-            received_locations.clear()
-            print("Ready for next data cycle.\n")
+    # Reset for next round
+    pollution_data.clear()
+    pollutant_data.clear()
+    received_locations.clear()
+    print("Ready for next data cycle.\n")
